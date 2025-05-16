@@ -47,6 +47,7 @@ def main():
         try:
             mod = importlib.import_module(name)
             plugins[name] = mod
+            print('++ plugin: ',name)
         except Exception as e:
             print('+++ Unable to active plugin: '+name,e)
             pass

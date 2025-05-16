@@ -1,0 +1,14 @@
+backbone: resnext50_32x4d
+checkpoint: handlers/checkpoints/FCOS_x50.ckpt
+det_thresh: 0.548
+detector: FCOS
+extra_blocks: false
+model_name: FCOS_x50
+num_classes: 2
+patch_size: 1024
+returned_layers:
+- 1
+- 2
+- 3
+- 4
+weights: IMAGENET1K_V2

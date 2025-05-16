@@ -1,5 +1,5 @@
 # Set the configuration option for your EXACT instance
 
-username="exact"
-password="exact"
-serverurl="http://127.0.0.1:8000"
+username="EXACTworker"
+password="mYfviv-0nijhe-firkut"
+serverurl="https://exact.hs-flensburg.de"
