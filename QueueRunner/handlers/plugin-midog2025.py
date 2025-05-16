@@ -1078,9 +1078,15 @@ def inference(apis:dict, job:PluginJob, update_progress:Callable, **kwargs):
             model, config = load_model_from_config(config_path)
 
             processor, patch_config = setup_inference(model=model, is_wsi=is_wsi, batch_size=8, num_workers=4, device='cuda', patch_size=1024, overlap=0.3, overwrite=True)
-            raw_results = processor.process_single(tpath, patch_config=patch_config,update_progress=update_progress)
+            results = processor.process_single(tpath, patch_config=patch_config,update_progress=update_progress)
 
-            stage1_results = [box + [score, ] for box, score in zip(raw_results['boxes'], raw_results['scores'])]
+            serializable_results = {
+                    'boxes': results['boxes'].tolist(),
+                    'scores': results['scores'].tolist(),
+                    'labels': results['labels'].tolist(),
+                }
+
+            #json.dump(serializable_results,open('stage1_results.json','w'))
 
 
         except Exception as e:
@@ -1131,10 +1137,12 @@ def inference(apis:dict, job:PluginJob, update_progress:Callable, **kwargs):
 
         try:
             # Loop through all detections
-            for n, line in enumerate(tqdm(stage1_results,desc='Uploading annotations (skip imposters)')):
+            results = [box + [score, ] for box, score in zip(serializable_results['boxes'], serializable_results['scores'])]
+
+            for n, line in enumerate(tqdm(results,desc='Uploading annotations (skip imposters)')):
 
                 if (n%update_steps == 0):
-                    update_progress (90+10*(n/len(stage1_results))) # 90.100% are for upload
+                    update_progress (90+10*(n/len(results))) # 90.100% are for upload
 
                 predcoords, score = line[0:4], line[4], 
 
